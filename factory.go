@@ -2,7 +2,16 @@
 
 package log
 
-func GetLogger() Logger {
+var factory Factory
 
-	return nil
+type Factory interface {
+	With(k string, v interface{}) Logger
+}
+
+func SetFactory(f Factory) {
+	factory = f
+}
+
+func With(k string, v interface{}) Logger {
+	return factory.With(k, v)
 }

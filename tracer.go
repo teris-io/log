@@ -5,7 +5,6 @@ package log
 import "time"
 
 type Tracer interface {
-
 	Trace()
 }
 
@@ -15,10 +14,10 @@ func NewTracer(logger Logger) Tracer {
 
 type tracer struct {
 	logger Logger
-	start time.Time
+	start  time.Time
 }
 
 func (t *tracer) Trace() {
-	d := time.Now().Sub(t.start)
+	d := time.Since(t.start)
 	t.logger.With("duration", d).Log("traced")
 }
