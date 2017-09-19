@@ -6,6 +6,7 @@ import (
 	"code.teris.io/go/log"
 	"fmt"
 	alog "github.com/apex/log"
+	"time"
 )
 
 type factory struct {
@@ -45,7 +46,7 @@ func (l *logger) Log(msg string) log.Tracer {
 	case l.lvl >= log.Error:
 		l.ctx.Error(msg)
 	}
-	return log.NewTracer(&logger{lvl: l.lvl, ctx: l.ctx})
+	return log.NewTracer(&logger{lvl: l.lvl, ctx: l.ctx}, time.Now())
 }
 
 func (l *logger) Logf(format string, v ...interface{}) log.Tracer {

@@ -8,8 +8,8 @@ type Tracer interface {
 	Trace()
 }
 
-func NewTracer(logger Logger) Tracer {
-	return &tracer{logger: logger, start: time.Now()}
+func NewTracer(logger Logger, start time.Time) Tracer {
+	return &tracer{logger: logger, start: start}
 }
 
 type tracer struct {
@@ -18,6 +18,6 @@ type tracer struct {
 }
 
 func (t *tracer) Trace() {
-	d := time.Since(t.start)
+	d := float64(time.Since(t.start)) * 1e-9
 	t.logger.With("duration", d).Log("traced")
 }

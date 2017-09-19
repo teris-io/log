@@ -5,7 +5,8 @@ package log
 type Level int
 
 const (
-	Debug = iota - 1
+	Unset = iota - 2
+	Debug
 	Info
 	Error
 )
