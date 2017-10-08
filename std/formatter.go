@@ -1,15 +1,18 @@
-// Copyright 2017 teris.io. License MIT
+// Copyright (c) 2017 Oleg Sklyar & teris.io
 
 package std
 
 import (
-	"code.teris.io/go/log"
 	"fmt"
-	"github.com/fatih/color"
 	"time"
+
+	"code.teris.io/util/log"
+	"github.com/fatih/color"
 )
 
-var formatter = func(start time.Time, lvl log.Level, fields []Field, msg string) string {
+type FmtFun func(start time.Time, level log.LogLevel, msg string, fields []Field) string
+
+var DefaultFmtFun = func(start time.Time, lvl log.LogLevel, msg string, fields []Field) string {
 	timestr := color.CyanString(start.Format("02 15:04:05.000000"))
 	lvlstr := ""
 	switch lvl {
