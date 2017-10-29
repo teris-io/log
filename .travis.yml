@@ -1,0 +1,19 @@
+language: go
+
+go:
+  - 1.8
+
+before_install:
+  - go get
+  - touch coverage.txt
+  - pip install --user codecov
+
+script:
+  - go test -coverprofile=coverage-log.txt -covermode=atomic github.com/teris-io/log && touch coverage-log.txt
+  - go test -coverprofile=coverage-log-apex.txt -covermode=atomic github.com/teris-io/log/apex && touch coverage-log-apex.txt
+  - go test -coverprofile=coverage-log-std.txt -covermode=atomic github.com/teris-io/log/std && touch coverage-log-std.txt
+  - cat coverage-log.txt coverage-log-apex.txt coverage-log-std.txt > coverage.txt
+
+after_success:
+  - codecov
+

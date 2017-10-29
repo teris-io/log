@@ -1,14 +1,15 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io.
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
 package apex
 
 import (
-	"code.teris.io/util/log"
 	alog "github.com/apex/log"
+	"github.com/teris-io/log"
 )
 
 func NewFactory(root *alog.Logger) log.Factory {
-	return &factory{root: root, min: log.Unset}
+	return &factory{root: root, min: log.UnsetLevel}
 }
 
 func Use(root *alog.Logger) log.Factory {
@@ -19,15 +20,15 @@ func Use(root *alog.Logger) log.Factory {
 
 type factory struct {
 	root *alog.Logger
-	min  log.LogLevel
+	min  log.LoggerLevel
 }
 
 var _ log.Factory = (*factory)(nil)
 
 func (f *factory) New() log.Logger {
-	return &logger{factory: f, lvl: log.Unset, ctx: alog.NewEntry(f.root)}
+	return &logger{factory: f, lvl: log.UnsetLevel, ctx: alog.NewEntry(f.root)}
 }
 
-func (f *factory) Threshold(min log.LogLevel) {
+func (f *factory) Threshold(min log.LoggerLevel) {
 	f.min = min
 }

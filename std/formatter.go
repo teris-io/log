@@ -1,4 +1,5 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
 package std
 
@@ -6,21 +7,21 @@ import (
 	"fmt"
 	"time"
 
-	"code.teris.io/util/log"
 	"github.com/fatih/color"
+	"github.com/teris-io/log"
 )
 
-type FmtFun func(start time.Time, level log.LogLevel, msg string, fields []Field) string
+type FmtFun func(start time.Time, level log.LoggerLevel, msg string, fields []Field) string
 
-var DefaultFmtFun = func(start time.Time, lvl log.LogLevel, msg string, fields []Field) string {
+var DefaultFmtFun = func(start time.Time, lvl log.LoggerLevel, msg string, fields []Field) string {
 	timestr := color.CyanString(start.Format("02 15:04:05.000000"))
 	lvlstr := ""
 	switch lvl {
-	case log.Debug:
+	case log.DebugLevel:
 		lvlstr = fmt.Sprintf(" %s", color.New(color.Bold, color.FgYellow).Sprint("DBG"))
-	case log.Info:
+	case log.InfoLevel:
 		lvlstr = fmt.Sprintf(" %s", color.New(color.Bold, color.FgGreen).Sprint("INF"))
-	case log.Error:
+	case log.ErrorLevel:
 		lvlstr = fmt.Sprintf(" %s", color.New(color.Bold, color.FgRed).Sprint("ERR"))
 	}
 	fieldstr := ""

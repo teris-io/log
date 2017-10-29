@@ -1,4 +1,5 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io.
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
 package log
 
@@ -17,10 +18,10 @@ func (n *noop) New() Logger {
 	return &noop{}
 }
 
-func (n *noop) Threshold(lvl LogLevel) {
+func (n *noop) Threshold(lvl LoggerLevel) {
 }
 
-func (n *noop) Level(lvl LogLevel) Logger {
+func (n *noop) Level(lvl LoggerLevel) Logger {
 	return n
 }
 
@@ -32,7 +33,7 @@ func (n *noop) Fields(data map[string]interface{}) Logger {
 	return n
 }
 
-func (n *noop) WithError(err error) Logger {
+func (n *noop) Error(err error) Logger {
 	return n
 }
 

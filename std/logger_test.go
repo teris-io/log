@@ -1,4 +1,5 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
 package std_test
 
@@ -8,12 +9,12 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
-	"code.teris.io/util/log"
-	"code.teris.io/util/log/std"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"time"
+	"github.com/teris-io/log"
+	"github.com/teris-io/log/std"
 )
 
 type strwriter struct {
@@ -26,25 +27,25 @@ func (sw *strwriter) Write(p []byte) (n int, err error) {
 }
 
 func TestLoggerStaticLogsDirectly(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
 	log.Log("logs directly")
 	assert.True(t, strings.Contains(w.entries[0], " logs directly"))
 }
 
 func TestLoggerStaticLogsFormattedDirectly(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
 	log.Logf("%s %s", "logs", "directly")
 	assert.True(t, strings.Contains(w.entries[0], " logs directly"))
 }
 
 func TestLoggerStaticNewLoggerOnNew(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
 	logger := log.New()
 	logger.Log("new logger")
 	log.Log("logs directly")
@@ -53,10 +54,10 @@ func TestLoggerStaticNewLoggerOnNew(t *testing.T) {
 }
 
 func TestLoggerStaticNewLoggerOnLevel(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
-	logger := log.Level(log.Debug)
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
+	logger := log.Level(log.DebugLevel)
 	logger.Log("new logger")
 	log.Log("logs directly")
 	assert.True(t, strings.Contains(w.entries[0], " DBG new logger"))
@@ -64,9 +65,9 @@ func TestLoggerStaticNewLoggerOnLevel(t *testing.T) {
 }
 
 func TestLoggerStaticNewLoggerOnWith(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
 	logger := log.Field("ctx", "context")
 	logger.Log("new logger")
 	log.Log("logs directly")
@@ -75,9 +76,9 @@ func TestLoggerStaticNewLoggerOnWith(t *testing.T) {
 }
 
 func TestLoggerStaticNewLoggerOnFields(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
 	logger := log.Fields(map[string]interface{}{
 		"key1": 25,
 		"key2": "value2",
@@ -90,19 +91,19 @@ func TestLoggerStaticNewLoggerOnFields(t *testing.T) {
 }
 
 func TestLoggerStaticNewLoggerOnError(t *testing.T) {
-	defer std.Use(os.Stderr, log.Unset, std.DefaultFmtFun)
+	defer std.Use(os.Stderr, log.UnsetLevel, std.DefaultFmtFun)
 	w := &strwriter{}
-	std.Use(w, log.Unset, std.DefaultFmtFun)
-	logger := log.WithError(errors.Wrap(fmt.Errorf("inner"), "outer"))
+	std.Use(w, log.UnsetLevel, std.DefaultFmtFun)
+	logger := log.Error(errors.Wrap(fmt.Errorf("inner"), "outer"))
 	logger.Log("new logger")
 	log.Log("logs directly")
-	assert.True(t, strings.Contains(w.entries[0], " ERR new logger {error: outer: inner}, {source: TestLoggerStaticNewLoggerOnError"))
+	assert.True(t, strings.Contains(w.entries[0], " ERR new logger {error: outer: inner}, {source: "))
 	assert.True(t, strings.Contains(w.entries[1], " logs directly"))
 }
 
 func TestLoggerFactoryNewLoggerOnNew(t *testing.T) {
 	w := &strwriter{}
-	factory := std.NewFactory(stdlog.New(w, "", 0), log.Unset, std.DefaultFmtFun)
+	factory := std.NewFactory(stdlog.New(w, "", 0), log.UnsetLevel, std.DefaultFmtFun)
 	logger1 := factory.New()
 	logger2 := factory.New()
 	logger2.Log("logger2")
@@ -113,12 +114,12 @@ func TestLoggerFactoryNewLoggerOnNew(t *testing.T) {
 
 func TestLoggerChainingCreatesNewLoggers(t *testing.T) {
 	w := &strwriter{}
-	factory := std.NewFactory(stdlog.New(w, "", 0), log.Unset, std.DefaultFmtFun)
+	factory := std.NewFactory(stdlog.New(w, "", 0), log.UnsetLevel, std.DefaultFmtFun)
 	logger1 := factory.New()
-	logger2 := logger1.Level(log.Debug)
+	logger2 := logger1.Level(log.DebugLevel)
 	logger3 := logger2.Field("ctx", "context")
-	logger4 := logger3.Level(log.Info)
-	logger5 := logger4.WithError(fmt.Errorf("failed %s", "badly"))
+	logger4 := logger3.Level(log.InfoLevel)
+	logger5 := logger4.Error(fmt.Errorf("failed %s", "badly"))
 	logger5.Log("5th")
 	logger4.Log("4th")
 	logger3.Log("3rd")
@@ -133,12 +134,12 @@ func TestLoggerChainingCreatesNewLoggers(t *testing.T) {
 
 func TestLoggerLevelsBelowMinFilteredOut(t *testing.T) {
 	w := &strwriter{}
-	factory := std.NewFactory(stdlog.New(w, "", 0), log.Info, std.DefaultFmtFun)
+	factory := std.NewFactory(stdlog.New(w, "", 0), log.InfoLevel, std.DefaultFmtFun)
 	logger1 := factory.New()
-	logger2 := logger1.Level(log.Debug)
+	logger2 := logger1.Level(log.DebugLevel)
 	logger3 := logger2.Field("ctx", "context")
-	logger4 := logger3.Level(log.Info)
-	logger5 := logger4.WithError(fmt.Errorf("failed %s", "badly"))
+	logger4 := logger3.Level(log.InfoLevel)
+	logger5 := logger4.Error(fmt.Errorf("failed %s", "badly"))
 	logger5.Log("5th")
 	logger4.Log("4th")
 	logger3.Log("3rd")
@@ -151,8 +152,8 @@ func TestLoggerLevelsBelowMinFilteredOut(t *testing.T) {
 
 func TestLoggerTrace(t *testing.T) {
 	w := &strwriter{}
-	factory := std.NewFactory(stdlog.New(w, "", 0), log.Debug, std.DefaultFmtFun)
-	logger := factory.New().Level(log.Debug).Field("key", "value").Log("start")
+	factory := std.NewFactory(stdlog.New(w, "", 0), log.DebugLevel, std.DefaultFmtFun)
+	logger := factory.New().Level(log.DebugLevel).Field("key", "value").Log("start")
 	time.Sleep(100 * time.Millisecond)
 	logger.Trace()
 	assert.Equal(t, 2, len(w.entries))

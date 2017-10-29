@@ -1,19 +1,22 @@
-# Structured leveled log interface
+[![Build status][buildimage]][build] [![Coverage][codecovimage]][codecov] [![GoReportCard][cardimage]][card] [![API documentation][docsimage]][docs]
 
-Package `log` decouples the logger backend from your application. It defines
+# Structured log interface
+
+Package `log` provides the separation of the logging interface from its 
+implementation and decouples the logger backend from your application. It defines
 a simple, lightweight and comprehensive `Logger` and `Factory` interfaces which 
 can be used through your applications without any knowledge of the particular
 implemeting backend and can be configured at the application wiring point to
 bind a particular backend, such as Go's standard logger, `apex/log`, `logrus`, 
 with ease.
 
-To complement the facade, the package `code.teris.io/util/log/std` provides an 
+To complement the facade, the package `github.com/teris-io/log/std` provides an 
 implementation using the standard Go logger. The default log formatter for
 this implementation uses colour coding for log levels and logs the date
 leaving out the month and the year on the timestamp. However, the formatter
 is fully configurable.
 
-Similarly, the package `code.teris.io/util/log/apex` provides and implementation 
+Similarly, the package `github.com/teris-io/log/apex` provides and implementation 
 using the `apex/log` logger backend.
 
 
@@ -26,7 +29,7 @@ type Logger interface {
 	Level(lvl LogLevel) Logger
 	Field(k string, v interface{}) Logger
 	Fields(data map[string]interface{}) Logger
-	WithError(err error) Logger
+	Error(err error) Logger
 	Log(msg string) Tracer
 	Logf(format string, v ...interface{}) Tracer
 }
@@ -52,19 +55,19 @@ The log can be used both statically by binding a particular logger factory:
 
 ```go
 func init() {
-	std.Use(os.Stderr, log.Info, std.DefaultFmtFun)
+	std.Use(os.Stderr, log.InfoLevel, std.DefaultFmtFun)
 }
 
 // elsewhere	
-logger := log.Level(log.Info).Field("key", "value")
+logger := log.Level(log.InfoLevel).Field("key", "value")
 logger.Log("message")
 ```
 
 and dynamically by always going via a factory:
 
 ```go
-factory := std.NewFactory(os.Stderr, log.Info, std.DefaultFmtFun)
-logger := factory.Level(log.Info).Field("key", "value")
+factory := std.NewFactory(os.Stderr, log.InfoLevel, std.DefaultFmtFun)
+logger := factory.Level(log.InfoLevel).Field("key", "value")
 logger.Log("message")
 ```
 
@@ -76,7 +79,7 @@ To simplify debugging with execution time tracing, the `Log` and `Logf` methods
 return a tracer that can be used to measure and log the execution time:
 
 ```go
-logger := log.Level(log.Debug).Field("key", "value")
+logger := log.Level(log.DebugLevel).Field("key", "value")
 
 defer logger.Log("start").Trace()
 // code to trace the execution time of
@@ -88,25 +91,19 @@ the selected `Debug` level (her for the default formatter of the `std` logger):
 	08 16:31:42.023798 DBG start {key: value}
 	08 16:31:45.127619 DBG traced {duration: 3.103725832}, {key: value}
 
-# License and copyright
+### License and copyright
 
-    Copyright (c) 2017 Oleg Sklyar & teris.io
+	Copyright (c) 2017. Oleg Sklyar and teris.io. MIT license applies. All rights reserved.
 
-    MIT License
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-software and associated documentation files (the "Software"), to deal in the Software 
-without restriction, including without limitation the rights to use, copy, modify, 
-merge, publish, distribute, sublicense, and/or sell copies of the Software, and to 
-permit persons to whom the Software is furnished to do so, subject to the following 
-conditions:
+[build]: https://travis-ci.org/teris-io/log
+[buildimage]: https://travis-ci.org/teris-io/log.svg?branch=master
 
-The above copyright notice and this permission notice shall be included in all copies 
-or substantial portions of the Software.
+[codecov]: https://codecov.io/github/teris-io/log?branch=master
+[codecovimage]: https://codecov.io/github/teris-io/log/coverage.svg?branch=master
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+[card]: http://goreportcard.com/report/teris-io/log
+[cardimage]: https://goreportcard.com/badge/github.com/teris-io/log
+
+[docs]: https://godoc.org/github.com/teris-io/log
+[docsimage]: http://img.shields.io/badge/godoc-reference-blue.svg?style=flat

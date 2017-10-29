@@ -1,4 +1,5 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io.
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
 // Package log defines the Logger interface for a structured leveled log, the Factory
 // interface to create instances of the Logger and the Tracer interface used to trace

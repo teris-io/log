@@ -1,6 +1,7 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
-// Package std provides a logger implementation the builtin Go logger.
+// Package std provides a logger implementation via the Go built-in logger.
 package std
 
 import (
@@ -8,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"code.teris.io/util/log"
 	"github.com/pkg/errors"
+	"github.com/teris-io/log"
 )
 
 type Field struct {
@@ -23,13 +24,13 @@ type tracer interface {
 
 type logger struct {
 	*factory
-	lvl    log.LogLevel
+	lvl    log.LoggerLevel
 	fields []Field
 }
 
 var _ log.Logger = (*logger)(nil)
 
-func (l *logger) Level(lvl log.LogLevel) log.Logger {
+func (l *logger) Level(lvl log.LoggerLevel) log.Logger {
 	return &logger{factory: l.factory, lvl: lvl, fields: append([]Field{}, l.fields...)}
 }
 
@@ -45,13 +46,13 @@ func (l *logger) Fields(data map[string]interface{}) log.Logger {
 	return &logger{factory: l.factory, lvl: l.lvl, fields: fields}
 }
 
-func (l *logger) WithError(err error) log.Logger {
+func (l *logger) Error(err error) log.Logger {
 	ctx := []Field{{Name: "error", Value: err.Error()}}
 
 	if s, ok := err.(tracer); ok {
 		frame := s.StackTrace()[0]
 
-		name := fmt.Sprintf("%n", frame)
+		name := fmt.Sprintf("%s", frame)
 		file := fmt.Sprintf("%+s", frame)
 		line := fmt.Sprintf("%d", frame)
 
@@ -62,7 +63,7 @@ func (l *logger) WithError(err error) log.Logger {
 
 		ctx = append(ctx, Field{Name: "source", Value: fmt.Sprintf("%s(%s:%s)", name, file, line)})
 	}
-	return &logger{factory: l.factory, lvl: log.Error, fields: append(ctx, l.fields...)}
+	return &logger{factory: l.factory, lvl: log.ErrorLevel, fields: append(ctx, l.fields...)}
 }
 
 func (l *logger) Log(msg string) log.Tracer {

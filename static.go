@@ -1,4 +1,5 @@
-// Copyright (c) 2017 Oleg Sklyar & teris.io.
+// Copyright (c) 2017. Oleg Sklyar & teris.io. All rights reserved.
+// See the LICENSE file in the project root for licensing information.
 
 package log
 
@@ -15,7 +16,7 @@ func New() Logger {
 }
 
 // Level returns a new logger instance from the factory setting its log level to the value supplied.
-func Level(lvl LogLevel) Logger {
+func Level(lvl LoggerLevel) Logger {
 	return factory.New().Level(lvl)
 }
 
@@ -29,9 +30,9 @@ func Fields(data map[string]interface{}) Logger {
 	return factory.New().Fields(data)
 }
 
-// WithError returns a new logger instance from the factory setting the error as supplied.
-func WithError(err error) Logger {
-	return factory.New().WithError(err)
+// Error returns a new logger instance from the factory setting the error as supplied.
+func Error(err error) Logger {
+	return factory.New().Error(err)
 }
 
 // Log constructs a new logger instance from the factory with no context and logs a message.
