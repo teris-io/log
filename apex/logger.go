@@ -57,7 +57,6 @@ func (l *logger) Log(msg string) log.Tracer {
 func (l *logger) Logf(format string, v ...interface{}) log.Tracer {
 	if l.lvl >= l.factory.min {
 		return l.Log(fmt.Sprintf(format, v...))
-	} else {
-		return l.Log("")
 	}
+	return l.Log("")
 }
