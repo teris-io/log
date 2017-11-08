@@ -10,10 +10,14 @@ import (
 	"github.com/teris-io/log"
 )
 
+// NewFactory creates a new log Factory instance for the implementation based
+// on the Go standard log.
 func NewFactory(std *stdlog.Logger, min log.LoggerLevel, fmt FmtFun) log.Factory {
 	return &factory{std: std, min: min, fmt: fmt}
 }
 
+// Use activates the logger implementation (based on the Go standard log) to be
+// used for static logging via the log package static functions.
 func Use(out io.Writer, min log.LoggerLevel, fmt FmtFun) {
 	std := stdlog.New(out, "", 0)
 	log.SetFactory(NewFactory(std, min, fmt))

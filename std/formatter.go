@@ -11,8 +11,10 @@ import (
 	"github.com/teris-io/log"
 )
 
+// FmtFun defines the log formatter type for the logger implementation based on the Go standard log.
 type FmtFun func(start time.Time, level log.LoggerLevel, msg string, fields []Field) string
 
+// DefaultFmtFun defines the default formatter.
 var DefaultFmtFun = func(start time.Time, lvl log.LoggerLevel, msg string, fields []Field) string {
 	timestr := color.CyanString(start.Format("02 15:04:05.000000"))
 	lvlstr := ""

@@ -8,10 +8,14 @@ import (
 	"github.com/teris-io/log"
 )
 
+// NewFactory creates a new log Factory instance for the implementation based
+// on apex/log.
 func NewFactory(root *alog.Logger) log.Factory {
 	return &factory{root: root, min: log.UnsetLevel}
 }
 
+// Use activates the logger implementation (based on apex/log) to be
+// used for static logging via the log package static functions.
 func Use(root *alog.Logger) log.Factory {
 	factory := NewFactory(root)
 	log.SetFactory(factory)

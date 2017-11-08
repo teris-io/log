@@ -13,6 +13,7 @@ import (
 	"github.com/teris-io/log"
 )
 
+// Field defines a name-value placeholder for field information passed to the formatter.
 type Field struct {
 	Name  string
 	Value interface{}
